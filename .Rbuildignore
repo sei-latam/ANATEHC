@@ -1,0 +1,7 @@
+^data-raw$
+^\.travis\.yml$
+^README\.Rmd$
+^.*\.Rproj$
+^\.Rproj\.user$
+^README-.*\.png$
+README-references.bib

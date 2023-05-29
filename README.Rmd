@@ -1,0 +1,91 @@
+---
+output: github_document
+bibliography: "`r here::here('README-references.bib')`"
+header-includes:
+  - \usepackage{color}
+  - \usepackage{amsmath}
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+[![Build Status](https://travis-ci.com/dazamora/DWBmodelUN.svg?branch=master)](https://travis-ci.com/dazamora/DWBmodelUN)
+[![codecov](https://codecov.io/gh/dazamora/DWBmodelUN/branch/master/graph/badge.svg)](https://codecov.io/gh/dazamora/DWBmodelUN)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3813037.svg)](https://doi.org/10.5281/zenodo.3813037)
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-",
+  out.width = "100%"
+)
+```
+# ANATEHC
+The R package Modelling aims to implement Dynamic Water Balance model proposed by @Zhang2008 in a monthly time step. It is a tool for hydrologic modelling using the Budyko 
+
+## Installation
+Currently, you can install the version under development from [Github](https://github.com/dazamora/ANATEHC), using these commands:
+
+```{r eval=FALSE, include=TRUE}
+install.packages("devtools")
+devtools::install_github("dazamora/ANATEHC")
+```
+
+## Concepts behind DWBmodelUN
+Two physical laws are taken into account in Dynamic Water Balance model (DWB), mass balance and energy balance. To represent the mass conservation, DWB is based on the equilibrium of water balance shown in equation (1).
+
+```{r fig.1, echo=FALSE, fig.align= "center", fig.height=1, fig.width=6, dpi = 200}
+par(mar=c(0.8,0.8,0.8,0.8)+0.1)
+plot(0,0, yaxt = "n", xaxt = "n", type = "n",bty= "n", ylab = "", xlab = "")
+text(0,0, labels = expression(italic(paste(frac("d","dt"),S[c],(t)," = ", "P(",S[c], ", t) - ",
+                                    "ET(",S[c], ", t) - ", "R(",S[c], ", t) - ","Q(",S[c], ", t)", "   [eq.1]", sep =""))), cex = 0.9,  font = 3, family = "sans")
+```
+
+Where $S_{c}$ is the total stored water in the basin, *P* 
+
+```{r fig.2, echo=FALSE, fig.align= "center", fig.height=1, fig.width=6, dpi = 600}
+par(mar=c(0.6,0.6,0.6,0.6)+0.1)
+plot(0,0, yaxt = "n", xaxt = "n", type = "n",bty= "n", ylab = "", xlab = "")
+text(0,0, labels = expression(italic(paste(frac("ET","P")," = ", "1 + ", frac("PET","P"), 
+                                           " - ", bgroup("[",1 - bgroup("(",frac("PET", "P"), ")")^(frac(1,1+alpha)), "]")^(1+alpha), "  [eq.2]", sep =""))), 
+     cex = 0.9)
+```
+
+Where $\alpha$ is a model parameter with an interval of [0-1]. @Zhang2008 detailed the 
+
+```{r rstudio-create-pkg, echo = FALSE}
+knitr::include_graphics("DWB_diagram.png", dpi = 200)
+```
+
+All these processes are done under the Top Down approach consider only four parameters are added to the model structure: $\alpha_{1}$, precipitation catchment efficiency; $\alpha$, evapotranspiration efficiency; *d*, groundwater store time constant; $S_{max}$, maximum water holding capacity of soil store (@Zhang2008).
+
+## ANATEHC functions
+DWBmodelUN package contains 12 functions, most of them have a practical example about their usage. The functions are:
+
+* `BuildGRUmaps`: This function builds raster maps for each parameter based on a raster file where the location of the Grouped Response Units (GRUs) are defined. 
+
+## Datasets
+DWBmodelUN also contains 11 data that allow to run the practical examples (@Duque2018): 
+
+* `basins`: The polygons of the 23 subbasins across the Sogamoso Basin.
+*	`cells`: Coordinates (Latitud and Longitud) and ID number of cells in Sogamoso River Basin.
+*	`dwb_results`: Results from DWB in Sogamoso River Basin.
+* `EscSogObs`: Flow rates observed in Sogamoso River Basin at 32 gauges from January 2001 to December 2016.
+* `GRU`: Raster data of Group Response Units in Sogamoso River Basin  
+*	`param`: Values to four parameters *alpha_{1}*, *alpha_{2}* *d*, *S_{max}* of DWB model in each GRU. 
+*	`PET_sogamoso`: Distributed monthly potential evapotranspiration in Sogamoso River Basin from January 2001 to December 2016.
+* `setup_data`: Data.frame with the initial configuration of the model run.
+* `simDWB.sogamoso`: Simulated runoff by the DWBmodelUN in the same stations where there were observed data from the Sogamoso basin.	
+*	`sogamoso`: Sogamoso River Basin data.
+*	`P_sogamoso`: Distributed monthly precipitation in Sogamoso River Basin from January 2001 to December 2016.
+*	`r.cells`: Data.frame with the initial configuration of the model run.
+
+## Disclaimer
+DWBmodelUN is a public R library that is made freely available
+
+The representations of the physical world within the software are widely known. The codification and use of them are offered through this R library as a public service and are no cause of action against the creators. The user of this software/information is responsible for verifying the suitability, accuracy, completeness and quality for the particular use of it and hence the user asumes all liability and waives any claims or actions against the creators. Creators do not make any claim, guarantee or warranty the, expressed or implied, suitability, accuracy, completeness and quality for the particular use of the library. The creators disclaim any and all liability for any claims or damages that may result from the application of the information/software contained in the library. The information/software is provided as a guide.
+
+Regarding other information contained in the library. The links or information that are accessed through external sites, which are not maintained by the creators, do not make the creators responsible for that content or the any claims or damages that may result from the use of these external sites. Information within this library is considered to be accurate with the considerations of uncertainties associated with hydrological modelling. 
+
+## References
