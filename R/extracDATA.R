@@ -4,6 +4,7 @@
 #' @param variable 
 #'
 #' @return
+#' @return
 #' @export
 #'
 #' @examples
