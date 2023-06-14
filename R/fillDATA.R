@@ -8,6 +8,6 @@
 #' @export
 #'
 #' @examples
-fillDATA <- function(vardata, typevar, fill.method, ){
+fillDATA <- function(vardata, typevar, fill.method){
   
 }

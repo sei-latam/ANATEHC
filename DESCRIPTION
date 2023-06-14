@@ -7,6 +7,17 @@ Author: c(person("David", "Zamora", email = "david.zamora@sei.org", comment = c(
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
+Depends: R (>= 4.2)
+Imports: 
+    dygraphs,
+    htmltools,
+    googlesheets4,
+    ncdf4,
+    raster
+Suggests: 
+    hydroGOF,
+    knitr,
+    rmarkdown
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
