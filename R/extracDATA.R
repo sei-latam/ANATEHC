@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-#' 
+#' #shasghagsjagja
 extracDATA <- function(user = "SEI", variable = "Precipitacion diaria", station.cod = "21010320", 
                        use.map = TRUE, area = NA, View.plot = TRUE, buffer = TRUE, 
                        dist.buffer = 800){
