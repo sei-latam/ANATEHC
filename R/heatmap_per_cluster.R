@@ -1,14 +1,14 @@
-
 #' Title
 #'
 #' @param time_series_df 
 #' @param station_info_df 
+#' @param output_dir
 #'
 #' @return
 #' @export
 #'
 #' @examples
-missing_data_heatmap <- function(time_series_df, station_info_df) {
+missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "./") {
   # Ensure the 'date' column is in Date format
   time_series_df$date <- as.Date(time_series_df$date)
   
@@ -26,28 +26,27 @@ missing_data_heatmap <- function(time_series_df, station_info_df) {
     arrange(cluster, latitude) %>%
     pull(station_code)
   
-  # Step 2: Estimate missing data for each month on each station
+  # Estimate missing data for each month on each station
   missing_data <- merged_df %>%
     group_by(station_code, month = format(date, "%Y-%m"), cluster) %>%
     summarise(missing_count = sum(is.na(value)))
   
-  heatmaps <- list()
-  for (clust in unique(missing_data$cluster)) {
-    subset_data <- filter(missing_data, cluster == clust)
-    
-    heatmap_plot <- ggplot(subset_data, aes(x = month, y = factor(station_code, levels = station_order), fill = factor(missing_count))) +
-      geom_tile() +
-      scale_fill_brewer(palette = "YlOrRd", na.value = "grey50") +
-      labs(title = paste("Missing Data Heatmap - Cluster", clust),
-           x = "Month",
-           y = "Station Code",
-           fill = "Missing Count") +
-      theme_minimal() +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))
-    
-    heatmaps[[as.character(clust)]] <- heatmap_plot
-  }
+  # Create a single plot with subplots for each cluster (missing data)
+  heatmap_plot <- ggplot(missing_data, aes(x = month, y = factor(station_code, levels = station_order), fill = factor(missing_count))) +
+    geom_tile() +
+    scale_fill_brewer(palette = "YlGnBu",)+
+    theme(legend.text = element_text(size = 5), legend.title = element_text(size = 5)) +
+    labs(title = "Missing Data Heatmap",
+         x = "Month",
+         y = "Station Code",
+         fill = "Missing Count") +
+    theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+    theme(panel.spacing = unit(0.5, "cm"), axis.text.y = element_text(size = 8))+
+    theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
+    facet_wrap(~cluster, scales = "free_y", ncol = 2)+# Facet by cluster, allowing y-axis scales to vary
+    scale_x_discrete(breaks = unique(missing_data$month)[seq(1, length(unique(missing_data$month)), by = 3)]) 
   
-  return(heatmaps)
-}
+  # Save the combined plot as a JPEG file
+  ggsave(file.path(output_dir, "combined_heatmap.jpeg"), heatmap_plot, width = 22, height = 15, units = "cm", dpi = 400)
 
+}
