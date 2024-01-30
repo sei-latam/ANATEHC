@@ -44,7 +44,7 @@ missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "
     theme(panel.spacing = unit(0.5, "cm"), axis.text.y = element_text(size = 8))+
     theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
     facet_wrap(~cluster, scales = "free_y", ncol = 2)+# Facet by cluster, allowing y-axis scales to vary
-    scale_x_discrete(breaks = unique(missing_data$month)[seq(1, length(unique(missing_data$month)), by = 3)]) 
+    scale_x_discrete(breaks = unique(missing_data$month)[seq(1, length(unique(missing_data$month)), by = 12)]) 
   
   # Save the combined plot as a JPEG file
   ggsave(file.path(output_dir, "combined_heatmap.jpeg"), heatmap_plot, width = 22, height = 15, units = "cm", dpi = 400)
