@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' 
-stats_per_cluster2 <- function(time_series_df, station_info_df, output_dir = "./") {
+stats_per_cluster <- function(time_series_df, station_info_df, output_dir = "./") {
   # Extract relevant columns from time_series_df
   time_series_data <- time_series_df[, -1]
   
@@ -26,9 +26,9 @@ stats_per_cluster2 <- function(time_series_df, station_info_df, output_dir = "./
     cluster = cluster_column,
     mean_value = colMeans(time_series_data, na.rm = TRUE),  # Mean
     min_value = fivenum_values[1,],         # Min
-    lower_hinge = fivenum_values[2,],       # Lower hinge
+    #lower_hinge = fivenum_values[2,],       # Lower hinge
     median_value = fivenum_values[3,],      # Median
-    upper_hinge = fivenum_values[4,],       # Upper hinge
+    #upper_hinge = fivenum_values[4,],       # Upper hinge
     max_value = fivenum_values[5,],         # Max
     sd_value = apply(time_series_data, 2, sd, na.rm = TRUE)  # Standard deviation
   )
@@ -39,7 +39,7 @@ stats_per_cluster2 <- function(time_series_df, station_info_df, output_dir = "./
   # Create the plot
   p <- ggplot(result_melted_df, aes(x = factor(cluster), y = value, fill = factor(cluster))) +
     theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
-    geom_boxplot(outlier.colour = "red", fill = '#A4A4A4', color = "black") +
+    geom_boxplot(outlier.colour = "red", fill = '#A4A4A4', color = "black", ) +
     facet_wrap(~variable, scales = "free_y", ncol = 3, strip.position = "left") +
     labs(title = "Statistics", x = "Cluster") +
     ylab("Value") +
