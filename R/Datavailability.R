@@ -37,11 +37,16 @@ station_data_av<- function(time_series_df, station_info_df, output_dir = "./") {
     labs(title = "Data Availability Over Time",
          x = "Date",
          y = "Number of Available Data Stations") +
-    facet_wrap(~cluster, scales = "free_y", ncol = 2) +  # Subplots for each cluster
+    theme_bw()+
+    theme(axis.line = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank()) +
+    #facet_wrap(~cluster, scales = "free_y", ncol = 2) +  # Subplots for each cluster
     theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
     theme(axis.text.x = element_text(angle = 0, hjust = 1))+
     theme(panel.spacing = unit(0.5, "cm"), axis.text.y = element_text(size = 8))+
-    scale_x_date(breaks = seq(min(availability_data$date), max(availability_data$date), by = "12 month"), date_labels = "%Y")  # Adjust the breaks for x-axis ticks
+    scale_x_date(breaks = seq(min(availability_data$date), max(availability_data$date), by = "3 month"), date_labels = "%Y")  # Adjust the breaks for x-axis ticks
 
   
   # Save the combined plot as a JPEG file
