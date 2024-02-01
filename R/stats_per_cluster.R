@@ -37,9 +37,14 @@ stats_per_cluster <- function(time_series_df, station_info_df, output_dir = "./"
   result_melted_df <- reshape2::melt(result_df, id.vars = c("code", "name", "cluster"))
   
   # Create the plot
-  p <- ggplot(result_melted_df, aes(x = factor(cluster), y = value, fill = factor(cluster))) +
-    theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
-    geom_boxplot(outlier.colour = "red", fill = '#A4A4A4', color = "black", ) +
+  p <- ggplot(result_melted_df, aes(x = factor(cluster), y = value, color = factor(cluster))) +
+    theme_bw()+
+    theme(axis.line = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank()) +
+    theme(panel.border = element_rect(colour = "black", fill=NA, linewidth=1)) +
+    geom_boxplot(outlier.colour = "red", fill = '#A4A4A4') +
     facet_wrap(~variable, scales = "free_y", ncol = 3, strip.position = "left") +
     labs(title = "Statistics", x = "Cluster") +
     ylab("Value") +
@@ -47,10 +52,7 @@ stats_per_cluster <- function(time_series_df, station_info_df, output_dir = "./"
           axis.text.y = element_text(size = 8))
   
   # Save the plot as a JPEG file
-  jpeg(file.path(output_dir, "boxplot_statistics.jpeg"), width = 18, height = 15, units = "cm", res = 400)
-  print(p)
-  dev.off()
+  ggsave(file.path(output_dir,  "boxplot_statistics.jpeg"),p , width = 18, height = 15, units = "cm", dpi = 400)
   
-  return(p)
 }
 
