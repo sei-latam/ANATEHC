@@ -35,6 +35,11 @@ missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "
   heatmap_plot <- ggplot(missing_data, aes(x = month, y = factor(station_code, levels = station_order), fill = factor(missing_count))) +
     geom_tile() +
     scale_fill_brewer(palette = "YlGnBu",)+
+    theme_bw()+
+    theme(axis.line = element_line(colour = "black"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank()) +
     theme(legend.text = element_text(size = 5), legend.title = element_text(size = 5)) +
     labs(title = "Missing Data Heatmap",
          x = "Month",
@@ -42,7 +47,7 @@ missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "
          fill = "Missing Count") +
     theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
     theme(panel.spacing = unit(0.5, "cm"), axis.text.y = element_text(size = 8))+
-    theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
     facet_wrap(~cluster, scales = "free_y", ncol = 2)+# Facet by cluster, allowing y-axis scales to vary
     scale_x_discrete(breaks = unique(missing_data$month)[seq(1, length(unique(missing_data$month)), by = 12)]) 
   
