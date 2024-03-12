@@ -9,14 +9,16 @@
 #' @param remove.zero 
 #' @param plot 
 #' @param resol 
-#' @param var.name 
+#' @param var.name
+#' @param language 
 #'
 #' @return
 #' @export
 #'
 #' @examples
 outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.date = "17-12-2023", time.step = "day", remove.zero = TRUE, 
-                        plot = TRUE, resol = 400, var.name = "Precipitation (mm)", output_dir = "./", xcluster = TRUE){
+                        plot = TRUE, resol = 400, var.name = "Precipitation (mm)", output_dir = "./", xcluster = TRUE,
+                        language = c("en","es"), unit="mm"){
   
   # Check if the first column of the data is of class "Date" and add a date column if not
   if(class(data[,1]) == "Date"){
@@ -55,6 +57,22 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
     return(vect.ident)
   }
   
+  #titles according to language
+  if(language=="en"){
+    main_plot <- "Outlier detection for"
+    legend_plot <- c("1"="lower","2"="upper")
+    stat_plot <- "Median "
+    count_plot <- "Count"
+    my_labels <- as.character(month.abb)
+  }else if( language=="es"){
+    main_plot <- "Detección de atípicos para"
+    legend_plot <- c("1"="Mínimo","2"="Máximo")
+    stat_plot <- "Mediana "
+    count_plot <- "Conteo"
+    my_labels <- c("Ene", "Feb", "Mar", "Abr", "May", "Jun","Jul",
+                   "Ago", "Sep", "Oct", "Nov", "Dic")
+  }
+  
   # Optionally remove zero values from the data
   if(remove.zero){
     data.1 <- as.data.frame(apply(data[,-1], 2, function(x) replace(x, x %in% 0, NA)))
@@ -68,7 +86,7 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
   id.out <- lapply(box.stats, iden.outlier)
   count.out<-lapply(box.stats, function(x) table(x$group))
   
-  my_labels <- as.character(month.abb)
+  
   
   if(!plot){
   }else{
@@ -81,7 +99,7 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
       
       count_barplot <- ggplot(as.data.frame(count.out[[i]]), aes(x = Var1, y = Freq, fill = factor(Var1))) +
         geom_bar(stat = "identity",alpha=0.6) +
-        ylab("Count") +
+        ylab(count_plot) +
         scale_fill_manual(values = rbPal) +
         theme_bw() +
         theme(
@@ -100,7 +118,7 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
       
       data_boxplot <- ggplot(data, aes(x = month, y = .data[[i]], color = month)) +
         theme_bw() +
-        labs(title = paste("Outlier detection for", i), x = "") +
+        labs(title = paste(main_plot, i), x = "") +
         scale_colour_manual(values = rbPal) +
         theme(
           axis.line = element_line(colour = "black"),
@@ -119,8 +137,8 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
       
       median_barplot <- ggplot(reshape2::melt(id.out[[i]]), aes(x = as.factor(Var1), y = value, fill = as.factor(Var2))) +
         geom_bar(stat = "identity",alpha=0.6, position = "dodge") +
-        ylab(paste0("median ",var.name)) +
-        scale_fill_manual(values = c("1"='#8c510a',"2"='#80cdc1'),labels = c("1"="lower","2"="upper")) +
+        ylab(paste0(stat_plot,"(", unit, ")")) +
+        scale_fill_manual(values = c("1"='#8c510a',"2"='#80cdc1'),labels = legend_plot) +
         theme_bw() +
         theme(
           axis.line = element_line(colour = "black"),
@@ -144,7 +162,7 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
     dev.off()
       
       # Save the plot as a JPEG file
-      ggsave(filename = paste0(output_dir,var.name, i, "_outl.jpeg"), p , width = 12, height = 15, units = "cm", dpi = resol)
+      ggsave(filename = paste0(output_dir,var.name,"_", i, "_outl.jpeg"), p , width = 12, height = 15, units = "cm", dpi = resol)
     }
   }
   
