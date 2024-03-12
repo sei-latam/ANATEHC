@@ -7,13 +7,14 @@
 #' @param var.name 
 #' @param output_dir 
 #' @param plot 
+#' @param unit
 #'
 #' @return
 #' @export
 #'
 #' @examples
 gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = "Precipitation (mm)",output_dir = "./",
-                        xcluster=TRUE, plot=FALSE) {
+                        xcluster=TRUE, plot=FALSE, language="en", unit="mm") {
   results_list <- list()  # List to store results for each column
   
   for (col in names(time_series_df)[-1]) {  # Exclude the Date column from processing
@@ -44,6 +45,20 @@ gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = 
     
     maver <- ma(time_series_df[[col]],win.len = 12, FUN = mean, na.rm = F)# Calculate moving average
     
+    #titles according to language
+    if(language=="en"){
+      main_plot <- "Pettitt test - Station: %s"
+      labelx_plot <- 'Date range: %s to %s'
+      legend_plot <- c('Observed',  'm. Average',sprintf('ave 1: %.2f', mu1), sprintf('ave 2: %.2f', mu2), 
+                       sprintf('Change point: %s', format(loc, "%Y-%m-%d")))
+    }else if( language=="es"){
+      main_plot <- "Puebra de Pettitt - Estación: %s"
+      labelx_plot <- 'Periodo: %s a %s'
+      legend_plot <- c('Observado',  'Media móvil',sprintf('prom 1: %.2f', mu1), sprintf('prom 2: %.2f', mu2), 
+                       sprintf('Punto de cambio: %s', format(loc, "%Y-%m-%d")))
+
+    }
+    
     if(!plot){
     }else{
       
@@ -51,9 +66,9 @@ gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = 
       png(paste0(output_dir,sprintf("homopet_%s.png", est)),width = 20, height = 10, units = 'cm', res = resol)  # Change 'pdf' to 'png' if you prefer a different format
       
       # Visualization (you can customize this part as needed)
-      title <- sprintf("Pettitt test - Station: %s", est)
-      label_x <- sprintf('Date range: %s to %s', format(min(filtered$date), "%Y-%m-%d"), format(max(filtered$date), "%Y-%m-%d"))
-      label_y <- var.name
+      title <- sprintf(main_plot, est)
+      label_x <- sprintf( labelx_plot, format(min(filtered$date), "%Y-%m-%d"), format(max(filtered$date), "%Y-%m-%d"))
+      label_y <- paste0(var.name, " (", unit, ")")
       
       par(mar = c(2, 2, 1, 1))  # Adjust margins (bottom, left, top, right)
       par(mgp = c(1, 0.5, 0))  # Adjust the distance between the axis label and the axis 
@@ -68,8 +83,7 @@ gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = 
       segments(loc, mu2, max(filtered$date), mu2, col = '#336334', lty = 2, lw = 1)
       abline(v = as.numeric(loc), col = 'red', lty = 3, lw = 1.5)
       
-      legend("topright", legend = c('Observed',  'm. Average',sprintf('ave 1: %.2f', mu1), sprintf('ave 2: %.2f', mu2), 
-                                    sprintf('Change point: %s', format(loc, "%Y-%m-%d"))),
+      legend("topright", legend = legend_plot,
              col = c('#f0eded','blue', 'orange', '#336334', 'red'),
              lty = c(1,1, 2, 2, 3), cex = 0.5) # Add legend
       
