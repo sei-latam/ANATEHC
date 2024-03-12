@@ -5,14 +5,17 @@
 #' @param output_dir 
 #' @param cluster 
 #' @param resol 
-#' @param var.name 
+#' @param var.name
+#' @param language
+#' @param unit
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' 
-missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "./",xcluster = TRUE, resol = 400, var.name = "Precipitation (mm)") {
+missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "./",xcluster = TRUE, resol = 400, 
+                                 var.name = "Precipitation (mm)", language="en", unit="mm") {
   
   # Ensure the 'date' column is in Date format
   time_series_df[[1]] <- as.Date(time_series_df[[1]])
@@ -54,6 +57,21 @@ missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "
 
   }
   
+  
+  #titles according to language
+  if(language=="en"){
+    main_plot <- paste0("Missing Data - ",var.name, " (", unit, ")")
+    labelx_plot <- "Month"
+    labely_plot <- "Station Code"
+    fill_plot <- "Missing Count"
+  }else if( language=="es"){
+    main_plot <- paste0("Disponibilidad de registros - ",var.name)
+    labelx_plot <- "Mes"
+    labely_plot <- "Código de la estación"
+    fill_plot <- paste0("Conteo de ", "\n","datos vacios")
+  }
+  
+  
   max_value <- max(missing_data$missing_count, na.rm = TRUE)
   missing_data$group <- cut(missing_data$missing_count, breaks = seq(0, 30 + 5, by = 5), include.lowest = T, labels = c("0", "1 - 5", "6 - 10", "11 - 15","16 - 20","21 - 25",">26"))
   
@@ -67,10 +85,10 @@ missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "
           panel.grid.minor = element_blank(),
           panel.background = element_blank()) +
     theme(legend.text = element_text(size = 5), legend.title = element_text(size = 5)) +
-    labs(title = paste0("Missing Data - ",var.name),
-         x = "Month",
-         y = "Station Code",
-         fill = "Missing Count") +
+    labs(title = main_plot,
+         x = labelx_plot,
+         y = labely_plot,
+         fill = fill_plot) +
     theme(panel.border = element_rect(colour = "black", fill=NA, linewidth = .6)) +
     theme(panel.spacing = unit(0.5, "cm"), axis.text.y = element_text(size = 5))+
     theme(axis.text.x = element_text(angle = 90, size = 5)) +
