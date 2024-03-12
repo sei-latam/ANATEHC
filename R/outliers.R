@@ -11,6 +11,7 @@
 #' @param resol 
 #' @param var.name
 #' @param language 
+#' @param unit
 #'
 #' @return
 #' @export
