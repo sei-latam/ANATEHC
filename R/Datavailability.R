@@ -5,7 +5,8 @@
 #' @param output_dir 
 #' @param plot 
 #' @param resol 
-#' @param var.name 
+#' @param var.name
+#' @param language
 #'
 #' @return
 #' @export
@@ -13,7 +14,7 @@
 #' @examples
 #' 
 station_data_av<- function(time_series_df, station_info_df, output_dir = "./",plot = TRUE, resol = 400,
-                           var.name = "Prec (mm)", xcluster = TRUE) {
+                           var.name = "Prec (mm)", xcluster = TRUE, language="en") {
   
   # Ensure the 'date' column is in Date format
   time_series_df[[1]] <- as.Date(time_series_df[[1]])
@@ -46,6 +47,16 @@ station_data_av<- function(time_series_df, station_info_df, output_dir = "./",pl
       summarise(available_count = sum(!is.na(value)))
   }
   
+  #titles according to language
+  if(language=="en"){
+    main_plot <- "Data Availability Over Time"
+    labelx_plot <- 'Date'
+    labely_plot <- "Number of Available Data Stations"
+  }else if( language=="es"){
+    main_plot <- "Disponibilidad de registros"
+    labelx_plot <- 'Fecha'
+    labely_plot <- "Número de estaciones con registro disponible"
+  }
   
   if(!plot){
   }else{
@@ -53,9 +64,9 @@ station_data_av<- function(time_series_df, station_info_df, output_dir = "./",pl
     # Create a line plot for data availability with subplots for each cluster
     availability_plot <- ggplot(availability_data, aes(x = dates, y = available_count)) +
       geom_line(color = "blue", linewidth = 0.3) +
-      labs(title = "Data Availability Over Time",
-           x = "Date",
-           y = "Number of Available Data Stations") +
+      labs(title = main_plot,
+           x = labelx_plot,
+           y = labely_plot) +
       theme_bw()+
       theme(axis.line = element_line(colour = "black"),
             panel.grid.major = element_blank(),
