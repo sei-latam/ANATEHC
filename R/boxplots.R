@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-flow_boxp <- function(data, output_dir = "./",plot = TRUE, resol = 400, var.name = "Prec (mm)",
+flow_boxp <- function(data, output_dir = "./",plot = TRUE, resol = 400, var.name = "",
                       remove.zero = TRUE, family=NA) {
   
   

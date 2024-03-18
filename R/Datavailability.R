@@ -15,7 +15,7 @@
 #' @examples
 #' 
 station_data_av<- function(time_series_df, station_info_df, output_dir = "./",plot = TRUE, resol = 400,
-                           var.name = "Prec (mm)", xcluster = TRUE, language="en",
+                           var.name = " ", xcluster = TRUE, language="en",
                            family=NA) {
   
   # Ensure the 'date' column is in Date format

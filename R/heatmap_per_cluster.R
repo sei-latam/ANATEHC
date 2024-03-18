@@ -17,7 +17,7 @@
 #' @examples
 #' 
 missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "./",xcluster = TRUE, resol = 400, 
-                                 var.name = "Precipitation (mm)", language="en", unit="mm",
+                                 var.name = "", language="en", unit="",
                                  sep_est_y=2, family=NA) {
   
   # Ensure the 'date' column is in Date format

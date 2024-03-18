@@ -19,8 +19,8 @@
 #'
 #' @examples
 outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.date = "17-12-2023", time.step = "day", remove.zero = TRUE, 
-                        plot = TRUE, resol = 400, var.name = "Precipitation (mm)", output_dir = "./", xcluster = TRUE,
-                        language = c("en","es"), unit="mm", family=NA){
+                        plot = TRUE, resol = 400, var.name = "", output_dir = "./", xcluster = TRUE,
+                        language = c("en","es"), unit="", family=NA){
   
   # Check if the first column of the data is of class "Date" and add a date column if not
   if(class(data[,1]) == "Date"){

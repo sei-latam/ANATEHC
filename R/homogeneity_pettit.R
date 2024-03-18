@@ -14,8 +14,8 @@
 #' @export
 #'
 #' @examples
-gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = "Precipitation (mm)",output_dir = "./",
-                        xcluster=TRUE, plot=FALSE, language="en", unit="mm", family=NA) {
+gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = "",output_dir = "./",
+                        xcluster=TRUE, plot=FALSE, language="en", unit="", family=NA) {
   results_list <- list()  # List to store results for each column
   
   for (col in names(time_series_df)[-1]) {  # Exclude the Date column from processing

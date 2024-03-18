@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' 
-stats_per_cluster <- function(time_series_df, station_info_df, output_dir = "./",plot = TRUE, resol = 400, var.name = "Prec (mm)",
+stats_per_cluster <- function(time_series_df, station_info_df, output_dir = "./",plot = TRUE, resol = 400, var.name = "",
                               xcluster = TRUE, remove.zero = TRUE) {
 
 
