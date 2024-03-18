@@ -8,6 +8,8 @@
 #' @param var.name
 #' @param language
 #' @param unit
+#' @param sep_est_y
+#' @param family
 #'
 #' @return
 #' @export
@@ -15,7 +17,8 @@
 #' @examples
 #' 
 missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "./",xcluster = TRUE, resol = 400, 
-                                 var.name = "Precipitation (mm)", language="en", unit="mm") {
+                                 var.name = "Precipitation (mm)", language="en", unit="mm",
+                                 sep_est_y=2, family=NA) {
   
   # Ensure the 'date' column is in Date format
   time_series_df[[1]] <- as.Date(time_series_df[[1]])
@@ -94,7 +97,10 @@ missing_data_heatmap <- function(time_series_df, station_info_df, output_dir = "
     theme(axis.text.x = element_text(angle = 90, size = 5)) +
     {if(xcluster)facet_wrap(~cluster, scales = "free_y", ncol = 2)}+# Facet by cluster, allowing y-axis scales to vary
     scale_x_discrete(breaks = unique(missing_data$month)[seq(1, length(unique(missing_data$month)), by = 48)])+
-    scale_y_discrete(breaks = station_order[seq(1, length(station_order), by = 2)]) 
+    scale_y_discrete(breaks = station_order[seq(1, length(station_order), by = sep_est_y)])
+  if(!is.na(family)){
+    heatmap_plot <- heatmap_plot + theme(text=element_text(family=family))
+  }
   # Save the combined plot as a JPEG file
   ggsave(file.path(paste0(output_dir,var.name, "_avheatmap.jpeg")), heatmap_plot, width = 22, height = 15, units = "cm", dpi = resol)
   
