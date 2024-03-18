@@ -7,13 +7,14 @@
 #' @param resol 
 #' @param var.name 
 #' @param remove.zero 
+#' @param family
 #'
 #' @return
 #' @export
 #'
 #' @examples
 flow_boxp <- function(data, output_dir = "./",plot = TRUE, resol = 400, var.name = "Prec (mm)",
-                      remove.zero = TRUE) {
+                      remove.zero = TRUE, family=NA) {
   
   
   
@@ -74,7 +75,9 @@ flow_boxp <- function(data, output_dir = "./",plot = TRUE, resol = 400, var.name
         theme(legend.key.size = unit(0.2, 'cm'))+
         ylim(min(box.stats[[i]]$stats),max(box.stats[[i]]$stats)) +
         guides(fill="none", color="none")  # Hide the color legend
-      
+      if(!is.na(family)){
+        data_boxplot <- data_boxplot + theme(text=element_text(family=family))
+      }
       # Save the plot as a JPEG fil
       ggsave(filename = paste0(output_dir,var.name," ", i, "_bxpl.jpeg"), data_boxplot , width = 10, height = 10, units = "cm", dpi = resol)
     }

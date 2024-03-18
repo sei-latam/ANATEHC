@@ -12,6 +12,7 @@
 #' @param var.name
 #' @param language 
 #' @param unit
+#' @param family
 #'
 #' @return
 #' @export
@@ -19,7 +20,7 @@
 #' @examples
 outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.date = "17-12-2023", time.step = "day", remove.zero = TRUE, 
                         plot = TRUE, resol = 400, var.name = "Precipitation (mm)", output_dir = "./", xcluster = TRUE,
-                        language = c("en","es"), unit="mm"){
+                        language = c("en","es"), unit="mm", family=NA){
   
   # Check if the first column of the data is of class "Date" and add a date column if not
   if(class(data[,1]) == "Date"){
@@ -116,6 +117,9 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
         ) +
         guides(fill="none",color = "none")+
         ylim(0, 1.2*max(as.data.frame(count.out[[i]])[2]))
+      if(!is.na(family)){
+        count_barplot <- count_barplot + theme(text=element_text(family=family))
+      }
       
       data_boxplot <- ggplot(data, aes(x = month, y = .data[[i]], color = month)) +
         theme_bw() +
@@ -135,6 +139,9 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
         labs(y = var.name) +
         ylim(min(box.stats[[i]]$stats),max(box.stats[[i]]$stats)) +
         guides(fill="none",color = "none")  # Hide the color legend
+      if(!is.na(family)){
+        data_boxplot <- data_boxplot + theme(text=element_text(family=family))
+      }
       
       median_barplot <- ggplot(reshape2::melt(id.out[[i]]), aes(x = as.factor(Var1), y = value, fill = as.factor(Var2))) +
         geom_bar(stat = "identity",alpha=0.6, position = "dodge") +
@@ -157,11 +164,15 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
         scale_x_discrete(labels = my_labels)+
         theme(legend.key.size = unit(0.2, 'cm'))+
         ylim(0, 2*max(as.data.frame(id.out[[i]])[2]))
+      if(!is.na(family)){
+        median_barplot <- median_barplot + theme(text=element_text(family=family))
+      }
       
       # Print both plots side by side
     p<-grid.arrange(data_boxplot, count_barplot,median_barplot,ncol = 1,heights = c(10,5,5))
     dev.off()
-      
+    
+
       # Save the plot as a JPEG file
       ggsave(filename = paste0(output_dir,var.name,"_", i, "_outl.jpeg"), p , width = 12, height = 15, units = "cm", dpi = resol)
     }
@@ -217,7 +228,9 @@ outlierDETEC <- function(data,station_info_df, start.date = "01-01-1982", end.da
       theme(legend.position = c(0.9, 1.1),legend.title = element_blank(),legend.key=element_blank(),
             legend.text = element_text( size=7), legend.key.size = unit(0.1, 'cm'))+
       scale_x_discrete(limits = as.character(1:12), breaks = as.character(1:12))
-    
+    if(!is.na(family)){
+      p1 <- p1 + theme(text=element_text(family=family))
+    }
     # Save the plot as a JPEG file
     ggsave(filename = paste0(output_dir,var.name,"_cluster_outliers.jpeg"), p1 , width = 12, height = 13, units = "cm", dpi = resol)
   }

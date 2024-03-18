@@ -8,13 +8,14 @@
 #' @param output_dir 
 #' @param plot 
 #' @param unit
+#' @param family
 #'
 #' @return
 #' @export
 #'
 #' @examples
 gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = "Precipitation (mm)",output_dir = "./",
-                        xcluster=TRUE, plot=FALSE, language="en", unit="mm") {
+                        xcluster=TRUE, plot=FALSE, language="en", unit="mm", family=NA) {
   results_list <- list()  # List to store results for each column
   
   for (col in names(time_series_df)[-1]) {  # Exclude the Date column from processing
@@ -63,7 +64,15 @@ gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = 
     }else{
       
       # Set up PNG file for each column plot
-      png(paste0(output_dir,sprintf("homopet_%s.png", est)),width = 20, height = 10, units = 'cm', res = resol)  # Change 'pdf' to 'png' if you prefer a different format
+      if(!is.na(family)){
+        png(paste0(output_dir,sprintf("homopet_%s.png", est)),width = 20, height = 10, 
+            units = 'cm', res = resol, family=family)  # Change 'pdf' to 'png' if you prefer a different format
+      } else {
+        png(paste0(output_dir,sprintf("homopet_%s.png", est)),width = 20, height = 10, 
+            units = 'cm', res = resol)  # Change 'pdf' to 'png' if you prefer a different format
+      }
+      
+
       
       # Visualization (you can customize this part as needed)
       title <- sprintf(main_plot, est)
@@ -126,7 +135,9 @@ gra_Pettitt <- function(time_series_df,station_info_df, resol = 400, var.name = 
       geom_text(stat = "count", aes(label = scales::percent(..count.. / sum(..count..))), position = position_fill(vjust = 0.5), show.legend = FALSE) +
       labs(title = "Significance Pie Chart by Cluster")
     
-    
+    if(!is.na(family)){
+      pie_chart <- pie_chart + theme(text=element_text(family=family))
+    }
     plot(pie_chart)
     ggsave(file.path(paste0(output_dir,var.name,"piechart.jpeg")),pie_chart, width = 22, height = 15, units = "cm", dpi = resol)
     dev.off()
